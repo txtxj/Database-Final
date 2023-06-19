@@ -5,8 +5,8 @@ create table if not exists publish(
     paid integer,
     `rank` integer check (`rank` > 0),
     author boolean,
-    primary key (tid, paid, `rank`),
-    foreign key (tid) references teachers(tid),
+    primary key (paid, `rank`),
+    foreign key (tid) references teacher(tid),
     foreign key (paid) references paper(paid)
 );
 
@@ -15,8 +15,8 @@ create table if not exists assumption(
     pid varchar(256) not null,
     `rank` integer check (`rank` > 0),
     funds float,
-    primary key (tid, pid, `rank`),
-    foreign key (tid) references teachers(tid),
+    primary key (pid, `rank`),
+    foreign key (tid) references teacher(tid),
     foreign key (pid) references project(pid)
 );
 
@@ -26,7 +26,7 @@ create table if not exists lecture(
     year integer,
     term integer check (term in (1, 2, 3)),
     credit integer,
-    primary key (tid, cid),
-    foreign key (tid) references teachers(tid),
+    primary key (tid, cid, year, term),
+    foreign key (tid) references teacher(tid),
     foreign key (cid) references course(cid)
 )
