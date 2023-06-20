@@ -60,6 +60,11 @@ public class JobManager : MonoSingleton<JobManager>
 
     public void CommitAndCheck()
     {
+        if (!ConnectionManager.Instance.isOpen || !ConnectionManager.Instance.isTransaction)
+        {
+            return;
+        }
+        
         try
         {
             ConnectionManager.Instance.CheckLectures();
@@ -73,5 +78,18 @@ public class JobManager : MonoSingleton<JobManager>
             return;
         }
         ConnectionManager.Instance.CommitTransaction();
+    }
+
+    public void RollBack()
+    {
+        if (!ConnectionManager.Instance.isOpen)
+        {
+            return;
+        }
+
+        if (ConnectionManager.Instance.isTransaction)
+        {
+            ConnectionManager.Instance.RollbackTransaction();
+        }
     }
 }

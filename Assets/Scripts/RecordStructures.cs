@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using JetBrains.Annotations;
 
 #region Base Data Type
 
@@ -26,10 +27,10 @@ public struct Teacher
         [Description("研究员")] Researcher = 11
     }
     
-    public string tid;
-    public string name;
-    public Gender gender;
-    public Title title;
+    [CanBeNull] public string tid;
+    [CanBeNull] public string name;
+    public Gender? gender;
+    public Title? title;
 }
 
 public struct Paper
@@ -100,18 +101,20 @@ public struct Course
 
 public struct Publish
 {
-    public string tid;
-    public int paid;
-    public int rank;
-    public bool author;
+    [CanBeNull] public string tid;
+    public int? paid;
+    public int? rank;
+    public bool? author;
+    [CanBeNull] public string name;
 }
 
 public struct Assumption
 {
-    public string tid;
-    public string pid;
-    public int rank;
-    public float funds;
+    [CanBeNull] public string tid;
+    [CanBeNull] public string pid;
+    public int? rank;
+    public float? funds;
+    [CanBeNull] public string name;
 }
 
 public struct Lecture
@@ -123,11 +126,12 @@ public struct Lecture
         [Description("秋季学期")] Fall = 3
     }
     
-    public string tid;
-    public string cid;
-    public int year;
-    public Term term;
-    public int credit;
+    [CanBeNull] public string tid;
+    [CanBeNull] public string cid;
+    public int? year;
+    public Term? term;
+    public int? credit;
+    [CanBeNull] public string name;
 }
 
 #endregion

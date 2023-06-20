@@ -1,7 +1,7 @@
 using System;
+using System.Text;
 using UnityEngine;
 using MySql.Data.MySqlClient;
-using Object = UnityEngine.Object;
 
 public class ConnectionManager : MonoSingleton<ConnectionManager>
 {
@@ -10,25 +10,28 @@ public class ConnectionManager : MonoSingleton<ConnectionManager>
 
     internal bool isOpen = false;
     internal bool isTransaction = false;
+
+    public SQLCommand initDatabaseAndTables;
+    public SQLCommand initRelationTables;
     
     private void Start()
     {
-        connection = new MySqlConnection("server=localhost;User Id=root;password=1234;Database=TARRS;charset=utf8");
+        connection = new MySqlConnection("server=localhost;port=3306;User Id=root;password=1234;Database=TARRS;charset=utf8mb4");
         try
         {
             connection.Open();
             isOpen = true;
         
             TextAsset init1 = Resources.Load<TextAsset>("InitDatabaseAndTables");
-            ExecuteNonQuery(init1.text);
+            ExecuteNonQuery(Encoding.UTF8.GetString(init1.bytes));
             TextAsset init2 = Resources.Load<TextAsset>("InitRelationTables");
-            ExecuteNonQuery(init2.text);
+            ExecuteNonQuery(Encoding.UTF8.GetString(init2.bytes));
         }
         catch (Exception e)
         {
             ConnectionLogManager.Instance.ReportError(e);
-            Debug.LogError(e);
             isOpen = false;
+            return;
         }
         ConnectionLogManager.Instance.ReportLog("初始化成功");
     }
@@ -53,7 +56,7 @@ public class ConnectionManager : MonoSingleton<ConnectionManager>
         return cmd.ExecuteReader();
     }
     
-    public T ExecuteAndReadOne<T>(string command) where T : struct
+    private T ExecuteAndReadOne<T>(string command) where T : struct
     {
         if (!isOpen)
         {

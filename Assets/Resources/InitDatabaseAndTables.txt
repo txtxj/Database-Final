@@ -1,4 +1,4 @@
-create database if not exists TARRS;
+﻿create database if not exists TARRS;
 use TARRS;
 
 create table if not exists teacher(
