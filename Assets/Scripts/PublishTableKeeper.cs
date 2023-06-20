@@ -102,6 +102,7 @@ public class PublishTableKeeper : MonoBehaviour, ITableKeeper
             };
             itemList.Add(data);
         }
+        reader.Close();
     }
 
     public void Show()

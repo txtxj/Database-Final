@@ -1,6 +1,4 @@
-use TARRS;
-
-create table if not exists publish(
+﻿create table if not exists publish(
     tid varchar(5) not null,
     paid integer,
     `rank` integer check (`rank` > 0),

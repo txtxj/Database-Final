@@ -1,7 +1,4 @@
-﻿create database if not exists TARRS;
-use TARRS;
-
-create table if not exists teacher(
+﻿create table if not exists teacher(
     tid varchar(5) not null primary key,
     name varchar(256) not null,
     gender integer check (gender in (1, 2)),

@@ -1,6 +1,4 @@
-﻿use TARRS;
-
-create table t1(
+﻿create table t1(
     select cid, year, term, sum(credit) as credit
     from lecture
     group by cid, year, term

@@ -1,6 +1,4 @@
-﻿use TARRS;
-
-create table t1(
+﻿create table t1(
     select pid, sum(funds) as funds
     from assumption
     group by pid

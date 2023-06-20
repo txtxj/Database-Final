@@ -1,6 +1,4 @@
-﻿use TARRS;
-
-set @c1 = (
+﻿set @c1 = (
     select count(*) from(
         select paid, count(author = true or null) as author
         from publish

@@ -11,9 +11,6 @@ public class ConnectionManager : MonoSingleton<ConnectionManager>
     internal bool isOpen = false;
     internal bool isTransaction = false;
 
-    public SQLCommand initDatabaseAndTables;
-    public SQLCommand initRelationTables;
-    
     private void Start()
     {
         connection = new MySqlConnection("server=localhost;port=3306;User Id=root;password=1234;Database=TARRS;charset=utf8mb4");
@@ -21,11 +18,11 @@ public class ConnectionManager : MonoSingleton<ConnectionManager>
         {
             connection.Open();
             isOpen = true;
-        
+
             TextAsset init1 = Resources.Load<TextAsset>("InitDatabaseAndTables");
-            ExecuteNonQuery(Encoding.UTF8.GetString(init1.bytes));
+            ExecuteNonQuery(init1.text);
             TextAsset init2 = Resources.Load<TextAsset>("InitRelationTables");
-            ExecuteNonQuery(Encoding.UTF8.GetString(init2.bytes));
+            ExecuteNonQuery(init2.text);
         }
         catch (Exception e)
         {
