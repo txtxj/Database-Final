@@ -1,0 +1,12 @@
+use TARRS;
+
+set @c1 = (
+    select count(*) from(
+        select paid, count(author = true or null) as author
+        from publish
+        group by paid
+    ) as tmp
+    where tmp.author > 1
+);
+
+select if (@c1 != 0 , true, false);

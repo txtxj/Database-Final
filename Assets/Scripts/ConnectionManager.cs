@@ -5,10 +5,11 @@ using Object = UnityEngine.Object;
 
 public class ConnectionManager : MonoSingleton<ConnectionManager>
 {
-    public MySqlConnection connection;
+    private MySqlConnection connection;
     private MySqlTransaction transaction;
 
-    public bool isOpen = false;
+    internal bool isOpen = false;
+    internal bool isTransaction = false;
     
     private void Start()
     {
@@ -25,14 +26,14 @@ public class ConnectionManager : MonoSingleton<ConnectionManager>
         }
         catch (Exception e)
         {
-            ConnectionLogManager.Instance.errorList.Add(e);
+            ConnectionLogManager.Instance.ReportError(e);
             Debug.LogError(e);
             isOpen = false;
         }
-        ConnectionLogManager.Instance.logList.Add("初始化成功");
+        ConnectionLogManager.Instance.ReportLog("初始化成功");
     }
 
-    public int ExecuteNonQuery(string command)
+    internal int ExecuteNonQuery(string command)
     {
         if (!isOpen)
         {
@@ -51,35 +52,61 @@ public class ConnectionManager : MonoSingleton<ConnectionManager>
         MySqlCommand cmd = new MySqlCommand(command, connection);
         return cmd.ExecuteReader();
     }
-
-    public void StartTransaction()
+    
+    public T ExecuteAndReadOne<T>(string command) where T : struct
     {
+        if (!isOpen)
+        {
+            return default;
+        }
+        MySqlCommand cmd = new MySqlCommand(command, connection);
+        return (T)cmd.ExecuteScalar();
+    }
+
+    internal void StartTransaction()
+    {
+        isTransaction = true;
         transaction = connection.BeginTransaction();
     }
 
-    public void CommitTransaction()
+    internal void CommitTransaction()
     {
+        isTransaction = false;
         transaction.Commit();
     }
 
-    public void RollbackTransaction()
+    internal void RollbackTransaction()
     {
+        isTransaction = false;
         transaction.Rollback();
     }
     
-    public void CheckLectures()
+    internal void CheckLectures()
     {
-        // 遍历 lecture 表，聚合每一个 (cid, year, term) 的学时，在 course 表中检查聚合学时是否等于 credit
+        TextAsset checker = Resources.Load<TextAsset>("LectureChecker");
+        if (ExecuteAndReadOne<bool>(checker.text))
+        {
+            throw new Exception("Lecture Check Fail");
+        }
     }
 
-    public void CheckAssumptions()
+    internal void CheckAssumptions()
     {
-        // 已将 (pid, `rank`) 作为主键，不存在排名重复的情况
         // 遍历 assumption 表，聚合每一个 pid，在 project 表中检查聚合经费是否等于 funds
+        TextAsset checker = Resources.Load<TextAsset>("AssumptionChecker");
+        if (ExecuteAndReadOne<bool>(checker.text))
+        {
+            throw new Exception("Assumption Check Fail");
+        }
     }
 
-    public void CheckPublishes()
+    internal void CheckPublishes()
     {
         // 遍历 publish 表，获取所有 paid，再依次搜索 (paid, author=true)，保证仅搜索出一个结果
+        TextAsset checker = Resources.Load<TextAsset>("PublishChecker");
+        if (ExecuteAndReadOne<bool>(checker.text))
+        {
+            throw new Exception("Publish Check Fail");
+        }
     }
 }

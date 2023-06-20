@@ -1,0 +1,23 @@
+use TARRS;
+
+create table t1(
+    select cid, year, term, sum(credit) as credit
+    from lecture
+    group by cid, year, term
+);
+
+set @c1 = (select count(*) from t1
+where not exists(
+    select * from course
+    where t1.cid = course.cid and t1.credit = course.credit
+));
+
+set @c2 = (select count(*) from course
+where not exists(
+    select * from t1
+    where t1.cid = course.cid and t1.credit = course.credit
+));
+
+drop table t1;
+
+select if (@c1 != 0 or @c2 != 0, true, false);

@@ -1,0 +1,23 @@
+use TARRS;
+
+create table t1(
+    select pid, sum(funds) as funds
+    from assumption
+    group by pid
+);
+
+set @c1 = (select count(*) from t1
+where not exists(
+    select * from project
+    where t1.pid = project.pid and t1.funds = project.funds
+));
+
+set @c2 = (select count(*) from project
+where not exists(
+    select * from t1
+    where t1.pid = project.pid and t1.funds = project.funds
+));
+
+drop table t1;
+
+select if (@c1 != 0 or @c2 != 0, true, false);

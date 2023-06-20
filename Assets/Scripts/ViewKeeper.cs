@@ -1,17 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Canvas))]
 public class ViewKeeper : MonoBehaviour
 {
-    public List<object> dirtyList = new List<object>();
-
-    private void Start()
-    {
-        
-    }
-
-    private void Update()
+    public void UpdateView(int type)
     {
         
     }
