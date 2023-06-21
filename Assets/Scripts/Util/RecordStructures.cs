@@ -131,7 +131,8 @@ public struct Lecture
     public int? year;
     public Term? term;
     public int? credit;
-    [CanBeNull] public string name;
+    [CanBeNull] public string teacherName;
+    [CanBeNull] public string courseName;
 }
 
 #endregion

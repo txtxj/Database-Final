@@ -43,11 +43,12 @@ public class PageKeeper : MonoSingleton<PageKeeper>
             buttonList[currentPage].GetComponent<Image>().sprite = inactiveSprite;
             buttonList[currentPage].GetComponent<Button>().enabled = true;
             buttonList[currentPage].transform.Translate(translation);
+            transform.GetChild(0).GetChild(currentPage).gameObject.SetActive(false);
         }
         buttonList[index].GetComponent<Image>().sprite = activeSprite;
         buttonList[index].GetComponent<Button>().enabled = false;
         buttonList[index].transform.Translate(-translation);
-        // 显示新页面，隐藏旧页面
+        transform.GetChild(0).GetChild(index).gameObject.SetActive(true);
         currentPage = index;
     }
 }

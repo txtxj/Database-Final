@@ -174,7 +174,7 @@ public class ViewKeeper : MonoBehaviour
                 "select (lecture.tid, lecture.cid, lecture.year, lecture.term, lecture.credit, teacher.name) " +
                 "from lecture left join teacher on lecture.tid = teacher.tid ");
             if (condition.tid != null || condition.cid != null || condition.year != null ||
-                condition.term != null || condition.credit != null || condition.name != null)
+                condition.term != null || condition.credit != null || condition.teacherName != null)
             {
                 sb.Append("where ");
             }
@@ -208,9 +208,9 @@ public class ViewKeeper : MonoBehaviour
                 sb.Append("lecture.credit = ").Append(condition.credit).Append(" and ");
             }
             
-            if (condition.name != null)
+            if (condition.teacherName != null)
             {
-                sb.Append("teacher.name = '").Append(condition.name).Append("' and ");
+                sb.Append("teacher.name = '").Append(condition.teacherName).Append("' and ");
             }
 
             MySqlDataReader reader = ConnectionManager.Instance.ExecuteAndRead(sb.ToString()[..^4]);
@@ -224,7 +224,7 @@ public class ViewKeeper : MonoBehaviour
                     year = int.Parse((string) reader[2]),
                     term = (Lecture.Term)int.Parse((string) reader[3]),
                     credit = int.Parse((string) reader[4]),
-                    name = (string) reader[5]
+                    teacherName = (string) reader[5]
                 };
                 lectureList.Add(data);
             }

@@ -5,16 +5,28 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PublishTableKeeper : MonoBehaviour, ITableKeeper
+public class PublishTableKeeper : MonoBehaviour
 {
     private readonly TMP_InputField[] textList = new TMP_InputField[4];
     private TMP_Dropdown dropdown;
     private Publish condition;
-    
+    private int currentPage = 0;
+    private int columnPerPage = 10;
+    private int totalPage;
+    private List<GameObject> objList = new ();
+
+    public GameObject template;
     public List<Publish> itemList = new ();
 
     public void Start()
     {
+        template = transform.GetChild(2).GetChild(1).gameObject;
+        for (int i = 0; i < columnPerPage; i++)
+        {
+            objList.Add(Instantiate(template, template.transform.parent));
+            objList[i].SetActive(false);
+        }
+        
         for (int i = 0; i < 4; i++)
         {
             textList[i] = transform.GetChild(1).GetChild(i).GetComponent<TMP_InputField>();
@@ -22,12 +34,16 @@ public class PublishTableKeeper : MonoBehaviour, ITableKeeper
 
         dropdown = GetComponentInChildren<TMP_Dropdown>();
         
-        transform.GetChild(0).GetChild(0).GetComponent<Button>().onClick.AddListener(Query);
+        transform.GetChild(0).GetChild(0).GetComponent<Button>().onClick.AddListener(() =>
+        {
+            LoadParams();
+            Query();
+        });
         transform.GetChild(0).GetChild(1).GetComponent<Button>().onClick.AddListener(Commit);
         transform.GetChild(0).GetChild(2).GetComponent<Button>().onClick.AddListener(Rollback);
     }
     
-    public void LoadParams()
+    private void LoadParams()
     {
         condition.author = dropdown.value switch
         {
@@ -41,13 +57,20 @@ public class PublishTableKeeper : MonoBehaviour, ITableKeeper
         condition.tid = textList[0].text.Length == 0 ? null : textList[0].text;
     }
 
-    public void Commit() => JobManager.Instance.CommitAndCheck();
+    public void Commit()
+    {
+        JobManager.Instance.CommitAndCheck();
+        Query();
+    }
 
-    public void Rollback() => JobManager.Instance.RollBack();
+    public void Rollback()
+    {
+        JobManager.Instance.RollBack();
+        Query();
+    }
 
     public void Query()
     {
-        LoadParams();
         itemList.Clear();
         StringBuilder sb = new StringBuilder();
         sb.Append(
@@ -103,10 +126,29 @@ public class PublishTableKeeper : MonoBehaviour, ITableKeeper
             itemList.Add(data);
         }
         reader.Close();
+        Show();
     }
 
     public void Show()
     {
-        
+        totalPage = (itemList.Count + columnPerPage - 1) / columnPerPage;
+        for (int i = 0; i < columnPerPage; i++)
+        {
+            int index = currentPage * columnPerPage + i;
+            if (index < itemList.Count)
+            {
+                objList[i].SetActive(true);
+                objList[i].GetComponent<PublishColumnKeeper>().InitData(itemList[index]);
+            }
+            else
+            {
+                objList[i].SetActive(false);
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        objList.ForEach(Destroy);
     }
 }

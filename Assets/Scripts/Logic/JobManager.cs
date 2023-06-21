@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class JobManager : MonoSingleton<JobManager>
 {
@@ -16,14 +17,13 @@ public class JobManager : MonoSingleton<JobManager>
         {
             commands.ForEach(x => ConnectionManager.Instance.ExecuteNonQuery(x));
             checker();
+            ConnectionManager.Instance.CommitTransaction();
         }
         catch (Exception e)
         {
             ConnectionLogManager.Instance.ReportError(e);
             ConnectionManager.Instance.RollbackTransaction();
-            return;
         }
-        ConnectionManager.Instance.CommitTransaction();
     }
 
     [Obsolete]
@@ -70,14 +70,13 @@ public class JobManager : MonoSingleton<JobManager>
             ConnectionManager.Instance.CheckLectures();
             ConnectionManager.Instance.CheckPublishes();
             ConnectionManager.Instance.CheckAssumptions();
+            ConnectionManager.Instance.CommitTransaction();
         }
         catch (Exception e)
         {
             ConnectionLogManager.Instance.ReportError(e);
             ConnectionManager.Instance.RollbackTransaction();
-            return;
         }
-        ConnectionManager.Instance.CommitTransaction();
     }
 
     public void RollBack()

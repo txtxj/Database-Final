@@ -1,4 +1,4 @@
-﻿create table t1(
+﻿create temporary table t1(
     select cid, year, term, sum(credit) as credit
     from lecture
     group by cid, year, term
@@ -16,6 +16,6 @@ where not exists(
     where t1.cid = course.cid and t1.credit = course.credit
 ));
 
-drop table t1;
+drop temporary table t1;
 
-select if (@c1 != 0 or @c2 != 0, true, false);
+select if (@c1 != 0 or @c2 != 0, 1, 0);

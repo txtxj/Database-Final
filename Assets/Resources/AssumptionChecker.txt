@@ -1,4 +1,4 @@
-﻿create table t1(
+﻿create temporary table t1(
     select pid, sum(funds) as funds
     from assumption
     group by pid
@@ -16,6 +16,6 @@ where not exists(
     where t1.pid = project.pid and t1.funds = project.funds
 ));
 
-drop table t1;
+drop temporary table t1;
 
-select if (@c1 != 0 or @c2 != 0, true, false);
+select if (@c1 != 0 or @c2 != 0, 1, 0);

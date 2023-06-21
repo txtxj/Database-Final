@@ -4,7 +4,7 @@
         from publish
         group by paid
     ) as tmp
-    where tmp.author > 1
+    where tmp.author != 1
 );
 
-select if (@c1 != 0 , true, false);
+select if (@c1 != 0 , 1, 0);
