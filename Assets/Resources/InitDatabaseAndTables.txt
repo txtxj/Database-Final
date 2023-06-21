@@ -9,7 +9,7 @@ create table if not exists paper(
     paid integer primary key,
     name varchar(256) not null,
     source varchar(256) not null,
-    time date,
+    time integer,
     type integer check (type > 0 and type < 5),
     level integer check (level > 0 and level < 7)
 );

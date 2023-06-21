@@ -10,12 +10,6 @@ where not exists(
     where t1.cid = course.cid and t1.credit = course.credit
 ));
 
-set @c2 = (select count(*) from course
-where not exists(
-    select * from t1
-    where t1.cid = course.cid and t1.credit = course.credit
-));
-
 drop temporary table t1;
 
-select if (@c1 != 0 or @c2 != 0, 1, 0);
+select if (@c1 != 0, 1, 0);

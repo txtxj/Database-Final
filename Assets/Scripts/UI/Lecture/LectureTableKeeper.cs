@@ -8,20 +8,28 @@ using UnityEngine.UI;
 public class LectureTableKeeper : MonoBehaviour
 {
     private readonly TMP_InputField[] textList = new TMP_InputField[6];
-    private TMP_Dropdown dropdown;
+    private TMP_Dropdown[] dropDownList = new TMP_Dropdown[2];
     private Lecture condition;
     private int currentPage = 0;
-    private int columnPerPage = 10;
+    private int rowPerPage;
     private int totalPage;
+    private float totalHeight;
+    private float itemHeight;
     private List<GameObject> objList = new ();
-
-    public GameObject template;
+    private TMP_Text pageNumber;
+    private GameObject template;
+    
     public List<Lecture> itemList = new ();
 
     public void Start()
     {
+        totalPage = 1;
         template = transform.GetChild(2).GetChild(1).gameObject;
-        for (int i = 0; i < columnPerPage; i++)
+        itemHeight = template.GetComponent<RectTransform>().rect.height;
+        totalHeight = transform.GetChild(2).GetComponent<RectTransform>().rect.height;
+        rowPerPage = Mathf.FloorToInt(totalHeight / itemHeight);
+        pageNumber = transform.GetChild(0).GetChild(13).GetComponent<TMP_Text>();
+        for (int i = 0; i < rowPerPage; i++)
         {
             objList.Add(Instantiate(template, template.transform.parent));
             objList[i].SetActive(false);
@@ -33,7 +41,8 @@ public class LectureTableKeeper : MonoBehaviour
         }
         textList[5] = transform.GetChild(1).GetChild(6).GetComponent<TMP_InputField>();
 
-        dropdown = GetComponentInChildren<TMP_Dropdown>();
+        dropDownList[0] = transform.GetChild(1).GetChild(5).GetComponent<TMP_Dropdown>();
+        dropDownList[1] = transform.GetChild(1).GetChild(7).GetComponent<TMP_Dropdown>();
         
         transform.GetChild(0).GetChild(0).GetComponent<Button>().onClick.AddListener(() =>
         {
@@ -42,17 +51,27 @@ public class LectureTableKeeper : MonoBehaviour
         });
         transform.GetChild(0).GetChild(1).GetComponent<Button>().onClick.AddListener(Commit);
         transform.GetChild(0).GetChild(2).GetComponent<Button>().onClick.AddListener(Rollback);
+        transform.GetChild(0).GetChild(3).GetComponent<Button>().onClick.AddListener(() =>
+        {
+            currentPage = (currentPage + 1) % totalPage;
+            Show();
+        } );
+        transform.GetChild(0).GetChild(4).GetComponent<Button>().onClick.AddListener(() =>
+        {
+            currentPage = (currentPage + totalPage - 1) % totalPage;
+            Show();
+        } );
+        transform.GetChild(0).GetChild(14).GetComponent<Button>().onClick.AddListener(() =>
+        {
+            transform.GetChild(3).gameObject.SetActive(true);
+        } );
     }
     
     private void LoadParams()
     {
-        condition.term = dropdown.value switch
-        {
-            1 => Lecture.Term.Spring,
-            2 => Lecture.Term.Summer,
-            3 => Lecture.Term.Fall,
-            _ => null
-        };
+        condition.term = dropDownList[0].value == 0 ? null : (Lecture.Term)dropDownList[0].value;
+        condition.type = dropDownList[1].value == 0 ? null : (Course.Type)dropDownList[1].value;
+        
         condition.teacherName = textList[2].text.Length == 0 ? null : textList[2].text;
         condition.courseName = textList[3].text.Length == 0 ? null : textList[3].text;
         condition.credit = textList[5].text.Length == 0 ? null : int.Parse(textList[5].text);
@@ -79,11 +98,11 @@ public class LectureTableKeeper : MonoBehaviour
         StringBuilder sb = new StringBuilder();
         sb.Append(
             "select lecture.tid, lecture.cid, lecture.year, lecture.term, lecture.credit, " +
-            "teacher.name, course.name " +
+            "teacher.name, course.name, course.type " +
             "from lecture left join teacher on lecture.tid = teacher.tid " +
             "left join course on course.cid = lecture.cid ");
         if (condition.tid != null || condition.cid != null || condition.year != null || condition.term != null ||
-             condition.credit != null || condition.teacherName != null || condition.courseName != null)
+             condition.credit != null || condition.teacherName != null || condition.courseName != null || condition.type != null)
         {
             sb.Append("where ");
         }
@@ -126,6 +145,11 @@ public class LectureTableKeeper : MonoBehaviour
         {
             sb.Append("course.name = '").Append(condition.courseName).Append("' and ");
         }
+        
+        if (condition.type != null)
+        {
+            sb.Append("course.type = ").Append((int)condition.type).Append(" and ");
+        }
 
         MySqlDataReader reader = ConnectionManager.Instance.ExecuteAndRead(sb.ToString()[..^4]);
 
@@ -136,27 +160,37 @@ public class LectureTableKeeper : MonoBehaviour
                 tid = reader[0].ToString(),
                 cid = reader[1].ToString(),
                 year = int.Parse(reader[2].ToString()),
-                term = (Lecture.Term)int.Parse(reader[3].ToString()),
+                term = (Lecture.Term) int.Parse(reader[3].ToString()),
                 credit = int.Parse(reader[4].ToString()),
                 teacherName = reader[5].ToString(),
-                courseName = reader[6].ToString()
+                courseName = reader[6].ToString(),
+                type = (Course.Type) int.Parse(reader[7].ToString())
             };
             itemList.Add(data);
         }
         reader.Close();
+        totalPage = (itemList.Count + rowPerPage - 1) / rowPerPage;
+        if (totalPage <= 0)
+        {
+            totalPage = 1;
+        }
         Show();
     }
 
     public void Show()
     {
-        totalPage = (itemList.Count + columnPerPage - 1) / columnPerPage;
-        for (int i = 0; i < columnPerPage; i++)
+        if (currentPage >= totalPage)
         {
-            int index = currentPage * columnPerPage + i;
+            currentPage = 0;
+        }
+        pageNumber.text = $"{currentPage + 1}/{totalPage}";
+        for (int i = 0; i < rowPerPage; i++)
+        {
+            int index = currentPage * rowPerPage + i;
             if (index < itemList.Count)
             {
                 objList[i].SetActive(true);
-                objList[i].GetComponent<LectureColumnKeeper>().InitData(itemList[index]);
+                objList[i].GetComponent<LectureRowKeeper>().InitData(itemList[index]);
             }
             else
             {

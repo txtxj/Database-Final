@@ -126,4 +126,9 @@ public class ConnectionManager : MonoSingleton<ConnectionManager>
             throw new Exception("Publish Check Fail");
         }
     }
+
+    public void Close()
+    {
+        connection.Close();
+    }
 }

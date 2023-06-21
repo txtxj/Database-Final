@@ -105,7 +105,12 @@ public struct Publish
     public int? paid;
     public int? rank;
     public bool? author;
-    [CanBeNull] public string name;
+    [CanBeNull] public string teacherName;
+    [CanBeNull] public string paperName;
+    [CanBeNull] public string source;
+    public int? date;
+    public Paper.Type? type;
+    public Paper.Level? level;
 }
 
 public struct Assumption
@@ -114,7 +119,13 @@ public struct Assumption
     [CanBeNull] public string pid;
     public int? rank;
     public float? funds;
-    [CanBeNull] public string name;
+    [CanBeNull] public string teacherName;
+    [CanBeNull] public string projectName;
+    [CanBeNull] public string source;
+    public Project.Type? type;
+    public float? totalFunds;
+    public int? start;
+    public int? end;
 }
 
 public struct Lecture
@@ -133,6 +144,7 @@ public struct Lecture
     public int? credit;
     [CanBeNull] public string teacherName;
     [CanBeNull] public string courseName;
+    public Course.Type? type;
 }
 
 #endregion

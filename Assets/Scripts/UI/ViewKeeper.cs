@@ -48,7 +48,7 @@ public class ViewKeeper : MonoBehaviour
                 "select (publish.tid, publish.paid, publish.`rank`, publish.author, teacher.name) " +
                 "from publish left join teacher on publish.tid = teacher.tid ");
             if (condition.tid != null || condition.paid != null || condition.rank != null ||
-                condition.author != null || condition.name != null)
+                condition.author != null || condition.teacherName != null)
             {
                 sb.Append("where ");
             }
@@ -77,9 +77,9 @@ public class ViewKeeper : MonoBehaviour
                 sb.Append("publish.author = ").Append(condition.author).Append(" and ");
             }
             
-            if (condition.name != null)
+            if (condition.teacherName != null)
             {
-                sb.Append("teacher.name = '").Append(condition.name).Append("' and ");
+                sb.Append("teacher.name = '").Append(condition.teacherName).Append("' and ");
             }
 
             MySqlDataReader reader = ConnectionManager.Instance.ExecuteAndRead(sb.ToString()[..^4]);
@@ -92,7 +92,7 @@ public class ViewKeeper : MonoBehaviour
                     paid = int.Parse((string) reader[1]),
                     rank = int.Parse((string) reader[2]),
                     author = bool.Parse((string) reader[3]),
-                    name = (string) reader[4]
+                    teacherName = (string) reader[4]
                 };
                 publishList.Add(data);
             }
@@ -111,7 +111,7 @@ public class ViewKeeper : MonoBehaviour
                 "select (assumption.tid, assumption.pid, assumption.`rank`, assumption.funds, teacher.name) " +
                 "from assumption left join teacher on assumption.tid = teacher.tid ");
             if (condition.tid != null || condition.pid != null || condition.rank != null ||
-                condition.funds != null || condition.name != null)
+                condition.funds != null || condition.teacherName != null)
             {
                 sb.Append("where ");
             }
@@ -140,9 +140,9 @@ public class ViewKeeper : MonoBehaviour
                 sb.Append("assumption.funds = ").Append(condition.funds).Append(" and ");
             }
             
-            if (condition.name != null)
+            if (condition.teacherName != null)
             {
-                sb.Append("teacher.name = '").Append(condition.name).Append("' and ");
+                sb.Append("teacher.name = '").Append(condition.teacherName).Append("' and ");
             }
 
             MySqlDataReader reader = ConnectionManager.Instance.ExecuteAndRead(sb.ToString()[..^4]);
@@ -155,7 +155,7 @@ public class ViewKeeper : MonoBehaviour
                     pid = (string) reader[1],
                     rank = int.Parse((string) reader[2]),
                     funds = float.Parse((string) reader[3]),
-                    name = (string) reader[4]
+                    teacherName = (string) reader[4]
                 };
                 assumptionList.Add(data);
             }
