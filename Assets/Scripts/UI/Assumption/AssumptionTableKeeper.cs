@@ -149,10 +149,8 @@ public class AssumptionTableKeeper : MonoBehaviour
         
         if (condition.start != null && condition.end != null)
         {
-            sb.Append("((project.start <= ").Append(condition.start).Append(" and ");
-            sb.Append("project.`end` >= ").Append(condition.start).Append(") or (");
             sb.Append("project.start <= ").Append(condition.end).Append(" and ");
-            sb.Append("project.`end` >= ").Append(condition.end).Append(")) and ");
+            sb.Append("project.`end` >= ").Append(condition.start).Append(" and ");
         }
         else if (condition.start != null)
         {

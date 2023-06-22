@@ -31,6 +31,7 @@ public class PageKeeper : MonoSingleton<PageKeeper>
         {
             buttonList.Add(transform.GetChild(i).gameObject);
             buttonList[i - 1].GetComponent<PageButtonData>().index = i - 1;
+            transform.GetChild(0).GetChild(i - 1).gameObject.SetActive(false);
         }
 
         mainPage = transform.GetChild(0).gameObject;

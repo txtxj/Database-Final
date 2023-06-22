@@ -159,6 +159,13 @@ public class TeacherTableKeeper : MonoBehaviour
             }
         }
     }
+    
+    public void Export(Teacher data)
+    {
+        GameObject obj = transform.GetChild(3).gameObject;
+        obj.SetActive(true);
+        obj.GetComponent<ExportQuery>().Data = data;
+    }
 
     private void OnDestroy()
     {

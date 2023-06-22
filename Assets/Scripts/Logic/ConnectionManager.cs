@@ -49,14 +49,14 @@ public class ConnectionManager : MonoSingleton<ConnectionManager>
         return cmd.ExecuteNonQuery();
     }
     
-    public MySqlDataReader ExecuteAndRead(string command)
+    public MySqlDataReader ExecuteAndRead(string command, bool strictNonTransaction = false)
     {
         if (!isOpen)
         {
             return null;
         }
         MySqlCommand cmd = new MySqlCommand(command, connection);
-        if (isTransaction)
+        if (isTransaction && strictNonTransaction == false)
         {
             cmd.Transaction = transaction;
         }

@@ -3,7 +3,6 @@ using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Diagnostics;
 
 public class TeacherRowKeeper : MonoBehaviour
 {
@@ -30,6 +29,6 @@ public class TeacherRowKeeper : MonoBehaviour
 
     private void Export()
     {
-        Process p = Process.Start("program.exe");
+        GetComponentInParent<TeacherTableKeeper>().Export(data);
     }
 }
