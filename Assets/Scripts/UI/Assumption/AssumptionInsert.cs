@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class AssumptionInsert : MonoBehaviour
 {
-    private Publish data;
+    private Assumption data;
     
     private void Start()
     {
@@ -22,50 +22,51 @@ public class AssumptionInsert : MonoBehaviour
         try
         {
             data.tid = tr.GetChild(0).GetComponent<TMP_InputField>().text;
-            data.paid = int.Parse(tr.GetChild(1).GetComponent<TMP_InputField>().text);
-            data.paperName = tr.GetChild(2).GetComponent<TMP_InputField>().text;
+            data.pid = tr.GetChild(1).GetComponent<TMP_InputField>().text;
+            data.projectName = tr.GetChild(2).GetComponent<TMP_InputField>().text;
             data.rank = int.Parse(tr.GetChild(3).GetComponent<TMP_InputField>().text);
-            data.author = tr.GetChild(4).GetComponent<TMP_Dropdown>().value == 0;
-            data.source = tr.GetChild(5).GetComponent<TMP_InputField>().text;
-            data.date = int.Parse(tr.GetChild(6).GetComponent<TMP_InputField>().text);
-            data.type = (Paper.Type) tr.GetChild(7).GetComponent<TMP_Dropdown>().value + 1;
-            data.level = (Paper.Level) tr.GetChild(8).GetComponent<TMP_Dropdown>().value + 1;
+            data.source = tr.GetChild(4).GetComponent<TMP_InputField>().text;
+            data.type = (Project.Type)tr.GetChild(5).GetComponent<TMP_Dropdown>().value + 1;
+            data.funds = float.Parse(tr.GetChild(6).GetComponent<TMP_InputField>().text);
+            data.totalFunds = float.Parse(tr.GetChild(7).GetComponent<TMP_InputField>().text);
+            data.start = int.Parse(tr.GetChild(8).GetChild(0).GetComponent<TMP_InputField>().text);
+            data.end = int.Parse(tr.GetChild(8).GetChild(1).GetComponent<TMP_InputField>().text);
         }
         catch (Exception)
         {
             ConnectionLogManager.Instance.ReportError(new ArgumentException("Check your input"));
             return;
         }
-        string command = $"select * from paper where paper.paid={data.paid}";
+        string command = $"select * from project where project.pid='{data.pid}'";
         
         MySqlDataReader reader = ConnectionManager.Instance.ExecuteAndRead(command);
         if (reader.Read())
         {
             reader.Close();
-            command = $"update paper set paper.name='{data.paperName}', paper.source='{data.source}', paper.time={data.date}, " +
-                      $"paper.type={(int)data.type}, paper.level={(int)data.level} " +
-                      $"where paper.paid={data.paid}; ";
+            command = $"update project set project.name='{data.projectName}', project.source='{data.source}', project.funds={data.totalFunds}, " +
+                      $"project.type={(int)data.type}, project.start={data.start}, project.`end`={data.end} " +
+                      $"where project.pid='{data.pid}'; ";
         }
         else
         {
             reader.Close();
-            command = $"insert into paper values ({data.paid}, '{data.paperName}', '{data.source}', {data.date}, " +
-                      $"{(int)data.type}, {(int)data.level}); ";
+            command = $"insert into project values ('{data.pid}', '{data.projectName}', '{data.source}', {data.type}, " +
+                      $"{data.totalFunds}, {data.start}, {data.end}); ";
         }
         JobManager.Instance.UpdateInTransaction(command);
         
-        command = $"select * from publish where publish.paid={data.paid} and publish.tid={data.tid}; ";
+        command = $"select * from assumption where assumption.pid='{data.pid}' and assumption.tid='{data.tid}'; ";
         reader = ConnectionManager.Instance.ExecuteAndRead(command);
         if (reader.Read())
         {
             reader.Close();
-            command = $"update publish set publish.`rank`={data.rank}, publish.author={data.author} " +
-                      $"where publish.paid={data.paid} and publish.tid={data.tid}; ";
+            command = $"update assumption set assumption.`rank`={data.rank}, assumption.funds={data.funds} " +
+                      $"where assumption.pid='{data.pid}' and assumption.tid='{data.tid}'; ";
         }
         else
         {
             reader.Close();
-            command = $"insert into publish values ('{data.tid}', {data.paid}, {data.rank}, {data.author}); ";
+            command = $"insert into assumption values ('{data.tid}', '{data.pid}', {data.rank}, {data.funds}); ";
         }
         JobManager.Instance.UpdateInTransaction(command);
         GetComponentInParent<AssumptionTableKeeper>().Query();

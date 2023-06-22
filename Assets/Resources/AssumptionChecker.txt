@@ -7,15 +7,14 @@
 set @c1 = (select count(*) from t1
 where not exists(
     select * from project
-    where t1.pid = project.pid and t1.funds = project.funds
+    where t1.pid = project.pid and abs(t1.funds - project.funds) < 1e-5
 ));
 
-set @c2 = (select count(*) from project
-where not exists(
+delete from project where not exists(
     select * from t1
-    where t1.pid = project.pid and t1.funds = project.funds
-));
+    where t1.pid = project.pid and abs(t1.funds - project.funds) < 1e-5
+);
 
 drop temporary table t1;
 
-select if (@c1 != 0 or @c2 != 0, 1, 0);
+select if (@c1 != 0, 1, 0);

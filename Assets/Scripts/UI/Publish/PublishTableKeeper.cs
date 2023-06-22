@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class PublishTableKeeper : MonoBehaviour
 {
-    private readonly TMP_InputField[] textList = new TMP_InputField[6];
+    private readonly TMP_InputField[] textList = new TMP_InputField[7];
     private TMP_Dropdown[] dropdownList = new TMP_Dropdown[3];
     private Publish condition;
     private int currentPage = 0;
@@ -40,7 +40,8 @@ public class PublishTableKeeper : MonoBehaviour
             textList[i] = transform.GetChild(1).GetChild(i).GetComponent<TMP_InputField>();
         }
         textList[4] = transform.GetChild(1).GetChild(5).GetComponent<TMP_InputField>();
-        textList[5] = transform.GetChild(1).GetChild(6).GetComponent<TMP_InputField>();
+        textList[5] = transform.GetChild(1).GetChild(6).GetChild(0).GetComponent<TMP_InputField>();
+        textList[6] = transform.GetChild(1).GetChild(6).GetChild(1).GetComponent<TMP_InputField>();
 
         dropdownList[0] = transform.GetChild(1).GetChild(4).GetComponent<TMP_Dropdown>();
         dropdownList[1] = transform.GetChild(1).GetChild(7).GetComponent<TMP_Dropdown>();
@@ -80,7 +81,8 @@ public class PublishTableKeeper : MonoBehaviour
         condition.teacherName = textList[2].text.Length == 0 ? null : textList[2].text;
         condition.rank = textList[3].text.Length == 0 ? null : int.Parse(textList[3].text);
         condition.source = textList[4].text.Length == 0 ? null : textList[4].text;
-        condition.date = textList[5].text.Length == 0 ? null : int.Parse(textList[5].text);
+        condition.queryBegin = textList[5].text.Length == 0 ? null : int.Parse(textList[5].text);
+        condition.queryEnd = textList[6].text.Length == 0 ? null : int.Parse(textList[6].text);
     }
 
     public void Commit()
@@ -105,7 +107,7 @@ public class PublishTableKeeper : MonoBehaviour
             "from publish left join teacher on publish.tid = teacher.tid left join paper on paper.paid = publish.paid ");
         if (condition.tid != null || condition.paid != null || condition.rank != null ||
             condition.author != null || condition.teacherName != null || condition.source != null ||
-            condition.date != null || condition.type != null || condition.level != null)
+            condition.queryBegin != null || condition.queryEnd != null || condition.type != null || condition.level != null)
         {
             sb.Append("where ");
         }
@@ -144,9 +146,14 @@ public class PublishTableKeeper : MonoBehaviour
             sb.Append("paper.source = '").Append(condition.source).Append("' and ");
         }
         
-        if (condition.date != null)
+        if (condition.queryBegin != null)
         {
-            sb.Append("paper.time = ").Append(condition.date).Append(" and ");
+            sb.Append("paper.time >= ").Append(condition.queryBegin).Append(" and ");
+        }
+        
+        if (condition.queryEnd != null)
+        {
+            sb.Append("paper.time <= ").Append(condition.queryEnd).Append(" and ");
         }
         
         if (condition.type != null)

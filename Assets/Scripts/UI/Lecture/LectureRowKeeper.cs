@@ -55,7 +55,7 @@ public class LectureRowKeeper : MonoBehaviour
         transform.GetChild(5).GetComponent<TMP_Dropdown>().value = (int) (originData.term ?? Lecture.Term.Spring) - 1;
         transform.GetChild(6).GetComponent<TMP_InputField>().text = originData.credit.ToString();
         transform.GetChild(7).GetComponentInChildren<TMP_Text>().text =
-            ((originData.type ?? Course.Type.Undergraduate).GetType().GetField(originData.type.ToString()).GetCustomAttribute(typeof(DescriptionAttribute), false) as DescriptionAttribute)?.Description;
+            (typeof(Course.Type).GetField(originData.type.ToString()).GetCustomAttribute(typeof(DescriptionAttribute), false) as DescriptionAttribute)?.Description;
     }
 
     private void OnValueChange()

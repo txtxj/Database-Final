@@ -109,6 +109,8 @@ public struct Publish
     [CanBeNull] public string paperName;
     [CanBeNull] public string source;
     public int? date;
+    public int? queryBegin;
+    public int? queryEnd;
     public Paper.Type? type;
     public Paper.Level? level;
 }
@@ -140,6 +142,8 @@ public struct Lecture
     [CanBeNull] public string tid;
     [CanBeNull] public string cid;
     public int? year;
+    public int? queryBegin;
+    public int? queryEnd;
     public Term? term;
     public int? credit;
     [CanBeNull] public string teacherName;

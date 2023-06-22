@@ -17,7 +17,7 @@ public class PageKeeper : MonoSingleton<PageKeeper>
     {
         set
         {
-            if (currentPage != value && value is >= 0 and <= 3)
+            if (currentPage != value && value is >= 0 and <= 4)
             {
                 SwitchPage(value);
             }
@@ -34,6 +34,7 @@ public class PageKeeper : MonoSingleton<PageKeeper>
         }
 
         mainPage = transform.GetChild(0).gameObject;
+        CurrentPage = 4;
     }
 
     private void SwitchPage(int index)
@@ -43,11 +44,17 @@ public class PageKeeper : MonoSingleton<PageKeeper>
             buttonList[currentPage].GetComponent<Image>().sprite = inactiveSprite;
             buttonList[currentPage].GetComponent<Button>().enabled = true;
             buttonList[currentPage].transform.Translate(translation);
+        }
+        if (currentPage is >= 0 and <= 4)
+        {
             transform.GetChild(0).GetChild(currentPage).gameObject.SetActive(false);
         }
-        buttonList[index].GetComponent<Image>().sprite = activeSprite;
-        buttonList[index].GetComponent<Button>().enabled = false;
-        buttonList[index].transform.Translate(-translation);
+        if (index is >= 0 and <= 3)
+        {
+            buttonList[index].GetComponent<Image>().sprite = activeSprite;
+            buttonList[index].GetComponent<Button>().enabled = false;
+            buttonList[index].transform.Translate(-translation);
+        }
         transform.GetChild(0).GetChild(index).gameObject.SetActive(true);
         currentPage = index;
     }

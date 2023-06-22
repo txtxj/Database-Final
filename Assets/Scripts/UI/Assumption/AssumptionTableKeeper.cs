@@ -147,14 +147,22 @@ public class AssumptionTableKeeper : MonoBehaviour
             sb.Append("assumption.source = '").Append(condition.source).Append("' and ");
         }
         
-        if (condition.start != null)
+        if (condition.start != null && condition.end != null)
         {
-            sb.Append("project.start = ").Append(condition.start).Append(" and ");
+            sb.Append("((project.start <= ").Append(condition.start).Append(" and ");
+            sb.Append("project.`end` >= ").Append(condition.start).Append(") or (");
+            sb.Append("project.start <= ").Append(condition.end).Append(" and ");
+            sb.Append("project.`end` >= ").Append(condition.end).Append(")) and ");
         }
-        
-        if (condition.end != null)
+        else if (condition.start != null)
         {
-            sb.Append("project.`end` = ").Append(condition.end).Append(" and ");
+            sb.Append("project.start <= ").Append(condition.start).Append(" and ");
+            sb.Append("project.`end` >= ").Append(condition.start).Append(" and ");
+        }
+        else if (condition.end != null)
+        {
+            sb.Append("project.start <= ").Append(condition.end).Append(" and ");
+            sb.Append("project.`end` >= ").Append(condition.end).Append(" and ");
         }
         
         if (condition.funds != null)

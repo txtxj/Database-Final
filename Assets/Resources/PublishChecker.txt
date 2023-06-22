@@ -7,4 +7,9 @@
     where tmp.author != 1
 );
 
+delete from paper where not exists(
+	select * from publish
+	where publish.paid = paper.paid
+);
+
 select if (@c1 != 0 , 1, 0);
