@@ -26,7 +26,7 @@
   let cyear = ((cyear));
   let cterm = ((cterm));
   let num = cid.len();
-  if (num == 0) {return;}
+  if (num == 0) {[无教学记录]}
   let i = 0;
   grid(columns: (auto, auto, auto, auto), gutter: 10pt,
   ..(while i < num {
@@ -50,7 +50,7 @@
   let parank = ((parank));
   let paauthor = ((paauthor));
   let num = paname.len();
-  if (num == 0) {return;}
+  if (num == 0) {[无论文发表记录]}
   let i = 0;
   while i < num {
     [+ #paname.at(i)，#pasource.at(i)，#payear.at(i)，#palevel.at(i)，排名第 #parank.at(i) #{if (paauthor.at(i) == "1") {[，通讯作者]}}]
@@ -71,7 +71,7 @@
   let prfund = ((prfund));
   let prfunds = ((prfunds));
   let num = prname.len();
-  if (num == 0) {return;}
+  if (num == 0) {[无承担项目记录]}
   let i = 0;
   while i < num {
     [+ #prname.at(i)，#prsource.at(i)，#prtype.at(i)，#prstart.at(i)-#prend.at(i)，总经费：#prfunds.at(i)，承担经费：#prfund.at(i)]
