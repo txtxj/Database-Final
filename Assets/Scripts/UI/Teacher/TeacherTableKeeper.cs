@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using MySql.Data.MySqlClient;
@@ -43,7 +44,15 @@ public class TeacherTableKeeper : MonoBehaviour
         
         transform.GetChild(0).GetChild(0).GetComponent<Button>().onClick.AddListener(() =>
         {
-            LoadParams();
+            try
+            {
+                LoadParams();
+            }
+            catch (Exception)
+            {
+                ConnectionLogManager.Instance.ReportError(new ArgumentException("Check your input"));
+                return;
+            }
             Query();
         });
         transform.GetChild(0).GetChild(1).GetComponent<Button>().onClick.AddListener(Commit);

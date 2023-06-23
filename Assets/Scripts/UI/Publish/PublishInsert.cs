@@ -54,7 +54,7 @@ public class PublishInsert : MonoBehaviour
         }
         JobManager.Instance.UpdateInTransaction(command);
         
-        command = $"select * from publish where publish.paid={data.paid} and publish.tid='{data.tid}; ";
+        command = $"select * from publish where publish.paid={data.paid} and publish.tid='{data.tid}'; ";
         reader = ConnectionManager.Instance.ExecuteAndRead(command);
         if (reader.Read())
         {

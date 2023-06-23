@@ -1,4 +1,6 @@
-﻿create temporary table t1(
+﻿drop temporary table if exists t1;
+
+create temporary table t1(
     select cid, year, term, sum(credit) as credit
     from lecture
     group by cid, year, term

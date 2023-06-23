@@ -1,4 +1,6 @@
-﻿create temporary table t1(
+﻿drop temporary table if exists t1;
+
+create temporary table t1(
     select pid, sum(funds) as funds
     from assumption
     group by pid

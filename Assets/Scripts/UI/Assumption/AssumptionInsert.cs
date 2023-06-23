@@ -50,7 +50,7 @@ public class AssumptionInsert : MonoBehaviour
         else
         {
             reader.Close();
-            command = $"insert into project values ('{data.pid}', '{data.projectName}', '{data.source}', {data.type}, " +
+            command = $"insert into project values ('{data.pid}', '{data.projectName}', '{data.source}', {(int)data.type}, " +
                       $"{data.totalFunds}, {data.start}, {data.end}); ";
         }
         JobManager.Instance.UpdateInTransaction(command);
