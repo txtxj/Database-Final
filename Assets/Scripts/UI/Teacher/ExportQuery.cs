@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class ExportQuery : MonoBehaviour
 {
+	public OpenPDFQuery openPdfQuery;
 	private Teacher data;
 
 	public Teacher Data
@@ -30,12 +31,23 @@ public class ExportQuery : MonoBehaviour
 			start = int.Parse(transform.GetChild(2).GetChild(1).GetChild(0).GetComponent<TMP_InputField>().text);
 			end = int.Parse(transform.GetChild(2).GetChild(1).GetChild(1).GetComponent<TMP_InputField>().text);
 		}
-		catch (Exception e)
+		catch (Exception)
 		{
 			ConnectionLogManager.Instance.ReportError(new ArgumentException("Check your input"));
 			return;
 		}
 		string filePath = TeacherExport.Instance.GenTyp(data, start, end);
-		TeacherExport.Instance.TypToPdf(filePath);
+		try
+		{
+			TeacherExport.Instance.TypToPdf(filePath);
+		}
+		catch (Exception e)
+		{
+			ConnectionLogManager.Instance.ReportError(e);
+			return;
+		}
+		openPdfQuery.gameObject.SetActive(true);
+		openPdfQuery.Path = filePath[..^3] + "pdf";
+		gameObject.SetActive(false);
 	}
 }

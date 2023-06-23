@@ -7,7 +7,6 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using MySql.Data.MySqlClient;
-using Debug = UnityEngine.Debug;
 
 public class TeacherExport : MonoSingleton<TeacherExport>
 {
@@ -158,10 +157,15 @@ public class TeacherExport : MonoSingleton<TeacherExport>
 			process.StartInfo.FileName = fullPath;
 			process.StartInfo.WorkingDirectory = Environment.CurrentDirectory + @"/ExportTeacherData";
 			process.StartInfo.Arguments = " compile \"" + filePath + "\"";
+			process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 			process.Start();
 			process.WaitForExit();
-			ConnectionLogManager.Instance.ReportLog(process.ExitCode.ToString());
+			if (process.ExitCode != 0)
+			{
+				throw new Exception($"typst.exe returned with code {process.ExitCode}, export fail");
+			}
 			return;
 		}
+		throw new Exception("Can't find 'typst.exe' in EnvironmentVariableTarget.Machine, export fail");
 	}
 }
