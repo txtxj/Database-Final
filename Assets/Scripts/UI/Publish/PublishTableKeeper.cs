@@ -65,12 +65,12 @@ public class PublishTableKeeper : MonoBehaviour
         transform.GetChild(0).GetChild(2).GetComponent<Button>().onClick.AddListener(Rollback);
         transform.GetChild(0).GetChild(3).GetComponent<Button>().onClick.AddListener(() =>
         {
-            currentPage = (currentPage + 1) % totalPage;
+            currentPage = (currentPage + totalPage - 1) % totalPage;
             Show();
         } );
         transform.GetChild(0).GetChild(4).GetComponent<Button>().onClick.AddListener(() =>
         {
-            currentPage = (currentPage + totalPage - 1) % totalPage;
+            currentPage = (currentPage + 1) % totalPage;
             Show();
         } );
         transform.GetChild(0).GetChild(15).GetComponent<Button>().onClick.AddListener(() =>
