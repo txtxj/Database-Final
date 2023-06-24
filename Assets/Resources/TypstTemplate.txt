@@ -20,22 +20,24 @@
 #line(length: 100%, stroke: 0.5pt + iblue)
 
 #{
-  let cid = ((cid));
-  let cname = ((cname));
-  let ccredit = ((ccredit));
-  let cyear = ((cyear));
-  let cterm = ((cterm));
-  let num = cid.len();
+  let cid = ((cid))
+  let cname = ((cname))
+  let ccredit = ((ccredit))
+  let cyear = ((cyear))
+  let cterm = ((cterm))
+  let num = cid.len()
   if (num == 0) {[无教学记录]}
-  let i = 0;
-  grid(columns: (auto, auto, auto, auto), gutter: 10pt,
-  ..(while i < num {
-    ([课程号：#cid.at(i)],
-    [课程名：#cname.at(i)],
-    [主讲学时：#ccredit.at(i)],
-    [学期：#cyear.at(i) #cterm.at(i)])
-    i += 1;
-  }))
+  else {
+  let i = 0
+    grid(columns: (auto, auto, auto, auto), gutter: 10pt,
+    ..(while i < num {
+      ([课程号：#cid.at(i)],
+      [课程名：#cname.at(i)],
+      [主讲学时：#ccredit.at(i)],
+      [学期：#cyear.at(i) #cterm.at(i)])
+      i += 1
+    }))
+  }
 }
 
 == #text(iblue)[发表论文情况]
@@ -43,18 +45,18 @@
 #line(length: 100%, stroke: 0.5pt + iblue)
 
 #{
-  let paname = ((paname));
-  let pasource = ((pasource));
-  let payear = ((payear));
-  let palevel = ((palevel));
-  let parank = ((parank));
-  let paauthor = ((paauthor));
-  let num = paname.len();
+  let paname = ((paname))
+  let pasource = ((pasource))
+  let payear = ((payear))
+  let palevel = ((palevel))
+  let parank = ((parank))
+  let paauthor = ((paauthor))
+  let num = paname.len()
   if (num == 0) {[无论文发表记录]}
-  let i = 0;
+  let i = 0
   while i < num {
     [+ #paname.at(i)，#pasource.at(i)，#payear.at(i)，#palevel.at(i)，排名第 #parank.at(i) #{if (paauthor.at(i) == "1") {[，通讯作者]}}]
-    i +=1;
+    i +=1
   }
 }
 
@@ -63,18 +65,18 @@
 #line(length: 100%, stroke: 0.5pt + iblue)
 
 #{
-  let prname = ((prname));
-  let prsource = ((prsource));
-  let prtype = ((prtype));
-  let prstart = ((prstart));
-  let prend = ((prend));
-  let prfund = ((prfund));
-  let prfunds = ((prfunds));
-  let num = prname.len();
+  let prname = ((prname))
+  let prsource = ((prsource))
+  let prtype = ((prtype))
+  let prstart = ((prstart))
+  let prend = ((prend))
+  let prfund = ((prfund))
+  let prfunds = ((prfunds))
+  let num = prname.len()
   if (num == 0) {[无承担项目记录]}
-  let i = 0;
+  let i = 0
   while i < num {
     [+ #prname.at(i)，#prsource.at(i)，#prtype.at(i)，#prstart.at(i)-#prend.at(i)，总经费：#prfunds.at(i)，承担经费：#prfund.at(i)]
-    i +=1;
+    i += 1
   }
 }
