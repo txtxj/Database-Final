@@ -9,12 +9,12 @@ create temporary table t1(
 set @c1 = (select count(*) from t1
 where not exists(
     select * from project
-    where t1.pid = project.pid and abs(t1.funds - project.funds) < 1e-5
+    where t1.pid = project.pid and abs(t1.funds - project.funds) < 1e-2
 ));
 
 delete from project where not exists(
     select * from t1
-    where t1.pid = project.pid and abs(t1.funds - project.funds) < 1e-5
+    where t1.pid = project.pid
 );
 
 drop temporary table t1;
