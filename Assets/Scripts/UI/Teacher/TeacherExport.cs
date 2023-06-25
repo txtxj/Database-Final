@@ -78,7 +78,7 @@ public class TeacherExport : MonoSingleton<TeacherExport>
 			data[2].Append("\"").Append(reader[2]).Append("\", ");
 			data[3].Append("\"").Append(GetEnumDescription((Paper.Level) int.Parse(reader[3].ToString()))).Append("\", ");
 			data[4].Append("\"").Append(reader[4]).Append("\", ");
-			data[5].Append("\"").Append(reader[5]).Append("\", ");
+			data[5].Append("\"").Append(bool.Parse(reader[5].ToString()) ? 1 : 0).Append("\", ");
 		}
 		reader.Close();
 		template = template.Replace("(paname)", data[0].ToString())
